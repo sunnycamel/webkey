@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editor id="editor.imagick" openable="true"  formId="diaporama_box" text="328" title="329" icon="frame_image.png" className="IMagickPreviewer" mimes="pdf,svg,tif,tiff,psd">
+	<class_definition filename="plugins/editor.imagick/class.IMagickPreviewer.php" classname="IMagickPreviewer"/>
+	<resources>
+		<js file="plugins/editor.imagick/class.IMagickPreviewer.js" className="IMagickPreviewer"/>
+	</resources>
+	<registry_contributions>
+		<actions>
+			<action name="imagick_data_proxy">
+				<processing>
+					<serverCallback methodName="switchAction"></serverCallback>
+				</processing>
+			</action>
+			<action name="delete_imagick_data">
+				<processing>
+					<serverCallback methodName="switchAction"></serverCallback>
+				</processing>
+			</action>
+			<action name="get_extracted_page">
+				<processing>
+					<serverCallback methodName="switchAction"></serverCallback>
+				</processing>
+			</action>
+		</actions>
+	</registry_contributions>
+	<dependencies>
+		<pluginResources pluginName="editor.diaporama"/>
+		<!-- Stream Wrapper must be implemented -->
+		<activePlugin pluginName="access.AJXP_STREAM_PROVIDER"/>
+	</dependencies>				
+</editor>

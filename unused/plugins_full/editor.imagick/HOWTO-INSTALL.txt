@@ -1,0 +1,50 @@
+/**
+ * @package info.ajaxplorer.plugins
+ * 
+ * Copyright 2007-2009 Charles du Jeu
+ * This file is part of AjaXplorer.
+ * The latest code can be found at http://www.ajaxplorer.info/
+ * 
+ * This program is published under the LGPL Gnu Lesser General Public License.
+ * You should have received a copy of the license along with AjaXplorer.
+ * 
+ * The main conditions are as follow : 
+ * You must conspicuously and appropriately publish on each copy distributed 
+ * an appropriate copyright notice and disclaimer of warranty and keep intact 
+ * all the notices that refer to this License and to the absence of any warranty; 
+ * and give any other recipients of the Program a copy of the GNU Lesser General 
+ * Public License along with the Program. 
+ * 
+ * If you modify your copy or copies of the library or any portion of it, you may 
+ * distribute the resulting library provided you do so under the GNU Lesser 
+ * General Public License. However, programs that link to the library may be 
+ * licensed under terms of your choice, so long as the library itself can be changed. 
+ * Any translation of the GNU Lesser General Public License must be accompanied by the 
+ * GNU Lesser General Public License.
+ * 
+ * If you copy or distribute the program, you must accompany it with the complete 
+ * corresponding machine-readable source code or with a written offer, valid for at 
+ * least three years, to furnish the complete corresponding machine-readable source code. 
+ * 
+ * Any of the above conditions can be waived if you get permission from the copyright holder.
+ * AjaXplorer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * PDF Preview Plugin : How to install?
+ */ 
+To be able to see PDF previews as jpeg, you must have both ImageMagick and Ghostscript 
+(Ghostscript fonts must be there too) installed on your server. 
+Once this is done, fill the path to "convert" in the file conf.editor.pdf.inc and move 
+this file inside your ajaxplorer installation server/conf/, then rename manifest.xml.default 
+to manifest.xml
+Beaware that the PHP command will not necessarily take the fact that convert is in the PATH into account
+so write the full path to convert.
+
+PLEASE : test your server before posting some "it's not working" in the forum!! in a commandline, 
+change to a directory containing a pdf file, let's say myFile.pdf, and execute the following command : 
+> [the_path_you_entered_in_conf.editor.pdf.inc] myFile.pdf[0] preview.jpg
+So for example, on windows, something like :
+> C:\PROGRA~1\ImageMagick\convert.exe myFile.pdf[0] preview.jpg
+or on Linux
+> /opt/bin/convert myFile.pdf[0] preview.jpg
+If it's working ok, then it should be in AjaXplorer too!

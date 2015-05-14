@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uploader id="uploader.flex" text="51" title="162">
+	<class_definition filename="plugins/uploader.flex/class.FlexUploadProcessor.php" classname="FlexUploadProcessor"/>
+	<processing>
+		<clientForm id="flash_upload_form"><![CDATA[
+			<!-- FLEX UPLOAD FORM -->
+			<div id="flash_upload_form" box_width="470">
+			<div id="flashscreen">
+			<iframe id="flashframe" frameborder="0" src="AJXP_SERVER_ACCESS?get_action=get_template&template_name=flash_tpl.html&pluginName=uploader.flex&encode=false"></iframe>
+			</div>
+			</div>	
+		]]></clientForm>
+		<activeCondition><![CDATA[		
+			return (ajaxplorer.actionBar.getFlashVersion() >= 8 && (document.location.href.substring(0,5)!='https' || Prototype.Browser.IE)) && ! ((typeof File != "undefined" && typeof (new XMLHttpRequest()).upload != "undefined"  && 'draggable' in new Element('span')) && (Prototype.Browser.Gecko?(parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('Firefox/')+8, navigator.userAgent.indexOf('Firefox/')+11)) >= 3.6?true:false):true))
+		]]></activeCondition>
+	</processing>
+	<registry_contributions>
+		<actions>
+			<action name="upload">
+				<pre_processing>					
+					<serverCallback methodName="preProcess"/>
+				</pre_processing>
+				<post_processing>					
+					<serverCallback methodName="postProcess" capture="true"/>
+				</post_processing>
+			</action>
+		</actions>
+	</registry_contributions>
+	<dependencies>
+		<!-- Stream Wrapper Access -->
+		<activePlugin pluginName="access.AJXP_STREAM_PROVIDER"/>
+	</dependencies>					
+</uploader>

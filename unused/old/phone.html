@@ -1,0 +1,824 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>`Webkey for Android`</title>
+	<<MENU>>
+<script type="text/javascript" language="javascript">
+
+
+	var preload = new Image();
+	preload.src = "down.png";
+	preload.src = "up.png";
+	preload.src = "left.png";
+	preload.src = "right.png";
+	preload.src = "center.png";
+
+   var img;
+   var recording = false;
+
+   var http_request = false;
+   var KMhttp_request = false;
+   var pressed = false;
+   var moveevent = "";
+   var wait = false;
+   var Mqueue = false;
+   var Kqueue = false;
+   var firsttype = true;
+   var refrid = 0;
+   var diffprogress = 0;
+ //  var forcerefrid = 0;
+   var keyq = '';
+   var lasturl = '';
+   var lasturlcount = 0;
+   var ignore_backspace = 0;
+   function makeRequest(url, parameters) {
+      http_request = false;
+      if (window.XMLHttpRequest) { // Mozilla, Safari,...
+         http_request = new XMLHttpRequest();
+         if (http_request.overrideMimeType) {
+            http_request.overrideMimeType('text/xml');
+         }
+      } else if (window.ActiveXObject) { // IE
+         try {
+            http_request = new ActiveXObject("Msxml2.XMLHTTP");
+         } catch (e) {
+            try {
+               http_request = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {}
+         }
+      }
+      if (!http_request) {
+         alert('Cannot create XMLHTTP instance');
+         return false;
+      }
+      http_request.onreadystatechange = alertContents;
+      http_request.open('GET', url + parameters, true);
+	document.getElementById('ind').className = 'yellow';
+      http_request.send(null);
+   }
+   function recordmakeRequest(url, parameters) {
+      recordhttp_request = false;
+      if (window.XMLHttpRequest) { // Mozilla, Safari,...
+         recordhttp_request = new XMLHttpRequest();
+         if (recordhttp_request.overrideMimeType) {
+            recordhttp_request.overrideMimeType('text/xml');
+         }
+      } else if (window.ActiveXObject) { // IE
+         try {
+            recordhttp_request = new ActiveXObject("Msxml2.XMLHTTP");
+         } catch (e) {
+            try {
+               recordhttp_request = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {}
+         }
+      }
+      if (!recordhttp_request) {
+         alert('Cannot create XMLHTTP instance');
+         return false;
+      }
+      recordhttp_request.open('GET', url + parameters, true);
+      recordhttp_request.send(null);
+   }
+   function lightmakeRequest(url, parameters) {
+      lighthttp_request = false;
+      if (window.XMLHttpRequest) { // Mozilla, Safari,...
+         lighthttp_request = new XMLHttpRequest();
+         if (lighthttp_request.overrideMimeType) {
+            lighthttp_request.overrideMimeType('text/xml');
+         }
+      } else if (window.ActiveXObject) { // IE
+         try {
+            lighthttp_request = new ActiveXObject("Msxml2.XMLHTTP");
+         } catch (e) {
+            try {
+               lighthttp_request = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {}
+         }
+      }
+      if (!lighthttp_request) {
+         alert('Cannot create XMLHTTP instance');
+         return false;
+      }
+      //lighthttp_request.onreadystatechange = alertContents;
+      lighthttp_request.open('GET', url + parameters, true);
+      lighthttp_request.send(null);
+   }
+   function KMmakeRequest(url, parameters,method) {
+      KMhttp_request = false;
+      if (window.XMLHttpRequest) { // Mozilla, Safari,...
+         KMhttp_request = new XMLHttpRequest();
+         if (KMhttp_request.overrideMimeType) {
+            KMhttp_request.overrideMimeType('text/xml');
+         }
+      } else if (window.ActiveXObject) { // IE
+         try {
+            KMhttp_request = new ActiveXObject("Msxml2.XMLHTTP");
+         } catch (e) {
+            try {
+               KMhttp_request = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {}
+         }
+      }
+      if (!KMhttp_request) {
+         alert('Cannot create XMLHTTP instance');
+         return false;
+      }
+      KMhttp_request.onreadystatechange = KMalertContents;
+      lasturl = url + parameters;
+      lasturlcount = 10;
+      if (method == 'POST')
+	      KMhttp_request.open('POST', url, true);
+      else
+	      KMhttp_request.open('GET', url + parameters, true);
+	document.getElementById('ind').className = 'yellow';
+      KMhttp_request.send(parameters);
+   }
+   function statusmakeRequest(url, parameters) {
+      statushttp_request = false;
+      if (window.XMLHttpRequest) { // Mozilla, Safari,...
+         statushttp_request = new XMLHttpRequest();
+         if (statushttp_request.overrideMimeType) {
+            statushttp_request.overrideMimeType('text/xml');
+         }
+      } else if (window.ActiveXObject) { // IE
+         try {
+            statushttp_request = new ActiveXObject("Msxml2.XMLHTTP");
+         } catch (e) {
+            try {
+               statushttp_request = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {}
+         }
+      }
+      if (!statushttp_request) {
+         alert('Cannot create XMLHTTP instance');
+         return false;
+      }
+      statushttp_request.onreadystatechange = statusalertContents;
+      statushttp_request.open('GET', url + parameters, true);
+      statushttp_request.send(null);
+   }
+   function alertContents() {
+	   try{
+	      if (http_request.responseText != '')
+		      document.getElementById('res').innerHTML = '<pre>' + http_request.responseText.replace(/\n/g,'<br/>') + '</pre>';
+	   } catch (e) {};
+      if (http_request.readyState == 4) {
+         if (http_request.status == 200) {
+		document.getElementById('ind').className = 'green';
+         }
+	 else
+	 {
+		 document.getElementById('ind').className = 'red';
+	 }
+      }
+   }
+   function KMalertContents() {
+      if (KMhttp_request.readyState == 4) {
+         if (KMhttp_request.status == 200) {
+		document.getElementById('ind').className = 'green';
+
+		wait = false;
+		if (Kqueue)
+		{
+			keyLater();
+		}
+		else
+		{
+			if (Mqueue)
+			{
+				moveLater();
+			}
+		}
+         }
+	 else
+	 {
+		 document.getElementById('ind').className = 'red';
+		 if (lasturlcount == 0)
+		 {
+			wait = false;
+			if (Kqueue)
+			{
+				keyLater();
+			}
+			else
+			{
+				if (Mqueue)
+				{
+					moveLater();
+				}
+			}
+		 }
+		 else
+		 {
+			 var l = lasturlcount-1;
+			 KMmakeRequest(lasturl,'','');
+			 lasturlcount = l;
+		 }
+	 }
+      }
+   }
+   function statusalertContents() {
+      if (statushttp_request.readyState == 4) {
+         if (statushttp_request.status == 200) {
+	      if (statushttp_request.responseText != '')
+		      document.getElementById('status').innerHTML = statushttp_request.responseText;
+         }
+	 setTimeout("refreshstatus()",5000);
+      }
+   }
+function mytimer()
+{
+<<ADMIN	if (document.getElementById('kalive').checked==true)
+	keepAlive();>>
+	setTimeout("mytimer()",14000);
+}
+setTimeout("mytimer()",1500);
+function sendkey(e) {
+	var evtobj=window.event? event : e; //distinguish between IE's explicit event object (window.event) and Firefox's implicit.
+	var unicode=evtobj.charCode? evtobj.charCode : -evtobj.keyCode;
+	if (unicode == 8)
+		unicode = -8;
+	if (unicode == -8 && ignore_backspace > 0)
+		ignore_backspace -= 1;
+	else
+	{
+		if (typeof evtobj.charCode === 'undefined')
+			submitkey(unicode,true);
+		else
+			submitkey(unicode,false);
+	}
+}
+function submitkey(unicode,old)
+{
+	if (unicode == -13)
+		unicode = 13;
+	if (document.getElementById('sendonenter').checked==true && unicode == 13)
+	{
+		setTimeout("resend();document.getElementById('text').value = ''",0);
+		return;
+	}
+	if (document.getElementById('sendtyping').checked==false)
+		return;
+	if (unicode == -10)
+		unicode = 10;
+//	if (unicode == 13)
+//		unicode = 10;
+	var t = 'injkey';
+//	if (document.getElementById('old').checked==true)
+//		t = 'oldkey';
+	if (old==true)
+		t = 'oldkey';
+	if (document.getElementById('orient').checked==true)
+		t = t+'h';
+	else
+		t = t+'v';
+	if (document.getElementById('sms').checked==true)
+		t = t+'s';
+	else
+		t = t+'n';
+	if (wait == false)
+	{
+		KMmakeRequest(t+'_'+unicode,'','');
+		wait = true;
+		keyq = t;
+	}
+	else
+	{
+		if (Kqueue == true)
+			keyq = keyq + '_' + unicode;		
+		else
+			keyq = t+'_'+unicode;
+		Kqueue = true;
+	}
+}
+function keyLater()
+{
+	KMmakeRequest(keyq,'','');
+	keyq = '';
+	Kqueue = false;
+	wait = true;
+}
+function refreshstatus()
+{
+	statusmakeRequest('status','');
+}
+function startnextimage()
+{
+	diffprogress = 0;
+	if (document.getElementById('auto').checked==true)
+	{
+		setTimeout("refreshImage(true)",100);
+	}
+}
+
+function saveImage(waitfordiff)
+{
+	var now = new Date();
+	var t = document.getElementById('png').checked?'png':'jpg';
+	var or = document.getElementById('orient').checked?'h':'v';
+	var lowr = document.getElementById('lowres').checked?'l':'n';
+	var f = document.getElementById('first').checked?'f':'n';
+	var fli = document.getElementById('flip').checked?'f':'n';
+	var w = waitfordiff?'w':'n';
+	var asfile = 'f';
+	window.location = 'screenshot.'+t+'?'+or+lowr+f+fli+w+asfile+now.getTime();
+	refreshImage(false);
+}
+function refreshImage(waitfordiff)
+{
+	var now = new Date();
+	var t = document.getElementById('png').checked?'png':'jpg';
+	var or = document.getElementById('orient').checked?'h':'v';
+	var lowr = document.getElementById('lowres').checked?'l':'n';
+	var f = document.getElementById('first').checked?'f':'n';
+	var fli = document.getElementById('flip').checked?'f':'n';
+	var w = waitfordiff?'w':'n';
+	var asfile = 'n';
+//	document.images['screenshot'] = new Image();
+	img = new Image();
+	if (diffprogress == 0 && document.getElementById('auto').checked==true)
+	{
+//		diffprogress = 1;
+		document.images['screenshot'].onload = function() {startnextimage()};
+		document.images['screenshot'].onerror = function() {startnextimage()};
+		document.images['screenshot'].onabort = function() {startnextimage()};
+	}
+	
+	document.images['screenshot'].src = 'screenshot.'+t+'?'+or+lowr+f+fli+w+asfile+now.getTime();
+	setWidth(document.getElementById('orient').checked?1:0,document.getElementById('halfsize').checked?1:0);
+}
+function coord(event)
+{
+	var top = 0;
+	var left = 0;
+	var ob = document.images['screenshot'];
+	do{
+		left += ob.offsetLeft;
+		top += ob.offsetTop;
+		ob = ob.offsetParent;
+	}while (ob);
+	pos_x = event.offsetX?(event.offsetX):event.pageX-left;
+	pos_y = event.offsetY?(event.offsetY):event.pageY-top;
+	if (document.getElementById('halfsize').checked==true)
+	{
+		pos_x = pos_x*2;
+		pos_y = pos_y*2;
+	}
+	if (document.getElementById('flip').checked == true)
+	{
+	<<IFNOTZTEBLADE
+		pos_x = negx(pos_x);
+		pos_y = negy(pos_y);
+	>>
+	}
+	if (document.getElementById('orient').checked==true)
+		return 'h'+pos_x+'_'+pos_y;
+	else
+		return 'v'+pos_x+'_'+pos_y;
+}
+function down(e)
+{
+	var ev=window.event? event : e //distinguish between IE's explicit event object (window.event) and Firefox's implicit.
+	if(ev.preventDefault)
+		ev.preventDefault();
+//	pos_x = event.offsetX?(event.offsetX):event.pageX-document.images.screenshot.offsetLeft;
+//	pos_y = event.offsetY?(event.offsetY):event.pageY-document.images.screenshot.offsetTop;
+	makeRequest('touch_'+coord(ev)+'_1','');
+	pressed = true;
+}
+function up(e)
+{
+	var ev=window.event? event : e //distinguish between IE's explicit event object (window.event) and Firefox's implicit.
+	if(ev.preventDefault)
+		ev.preventDefault();
+//	makeRequest('touch'+moveevent+'_'+coord(ev)+'_0','');
+//	moveevent = '';
+		if (wait == false)
+		{
+			moveevent = moveevent +'_' + coord(ev) +'_0';
+			moveLater();
+		}
+		else
+		{
+			moveevent =  moveevent + '_' +coord(ev) + '_0';
+			Mqueue = true;
+		}
+	pressed = false;
+}
+function move(e)
+{
+	var ev=window.event? event : e //distinguish between IE's explicit event object (window.event) and Firefox's implicit.
+	if(ev.preventDefault)
+		ev.preventDefault();
+	if (pressed)
+	{
+		if (wait == false)
+		{
+			moveevent = moveevent +'_' + coord(ev) +'_2';
+			moveLater();
+		}
+		else
+		{
+			moveevent =  moveevent + '_' +coord(ev) + '_2';
+			Mqueue = true;
+		}
+	}
+}
+function moveLater()
+{
+	if (pressed || Mqueue)
+	{
+		Mqueue = false;
+		wait = true;
+		KMmakeRequest('touch',moveevent,'POST');
+		moveevent = '';
+	}
+}
+function keepAlive()
+{
+	makeRequest('button_28',''); //send CLEAR to keep alive
+}
+function isBackspace(e)
+{
+	var evtobj=window.event? event : e //distinguish between IE's explicit event object (window.event) and Firefox's implicit.
+	if (evtobj.keyCode == 8)
+	{
+//		makeRequest('button_67','');//DEL
+		ignore_backspace += 1;
+		submitkey(-8,false);
+		return false;
+	}
+//	if (evtobj.keyCode == 13)
+//	{
+//		makeRequest('button_66','');//ENTER
+//	}
+}
+function intent(act,dat)
+{
+	var addr = 'intent';
+	var st='-a '+act+' -d '+dat;
+	var l=st.length;
+	var i = 0;
+	for (i = 0; i < l; i++)
+		addr += '_'+st.charCodeAt(i);
+	makeRequest(addr,'');
+}
+function runline(st)
+{
+	var addr = 'run';
+	var l=st.length;
+	var i = 0;
+	for (i = 0; i < l; i++)
+		addr += '_'+st.charCodeAt(i);
+	makeRequest(addr,'');
+}
+function cleartext()
+{
+	if (firsttype && document.getElementById('text').value == "`Click here to type on phone!`")
+	{
+		document.getElementById('text').value = "" ;
+	}
+	firsttype = false;
+}
+function call(number)
+{
+	var st = 'service call phone 2 s16 "'+number+'"';
+	var addr = 'run';
+	var l=st.length;
+	var i = 0;
+	for (i = 0; i < l; i++)
+		addr += '_'+st.charCodeAt(i);
+	makeRequest(addr,'');
+}
+function resend()
+{
+	var st = document.getElementById('text').value;
+	var l = st.length;
+	var i = 0;
+	var t = 'injkey';
+	if (document.getElementById('orient').checked==true)
+		t = t+'h';
+	else
+		t = t+'v';
+	if (document.getElementById('sms').checked==true)
+		t = t+'s';
+	else
+		t = t+'n';
+	for (i = 0; i < l; i++)
+		t = t + '_'+st.charCodeAt(i);
+	makeRequest(t,'');
+}
+function checklowres()
+{
+	if (document.getElementById('halfsize').checked)
+		document.getElementById('lowres').checked = true;
+	refreshImage(false);
+}
+function arrows_move(event)
+{
+	var top = 0;
+	var left = 0;
+	var ob = document.images['arrows'];
+	do{
+		left += ob.offsetLeft;
+		top += ob.offsetTop;
+		ob = ob.offsetParent;
+	}while (ob);
+	var x = event.offsetX?(event.offsetX):event.pageX-left;
+	var y = event.offsetY?(event.offsetY):event.pageY-top;
+	if (x < 11 && x < y && x < 36-y)
+	{
+		document.images['arrows'].src = 'left.png';
+		return;
+	}
+	if (y < 11 && y < 36-x)
+	{
+		document.images['arrows'].src = 'up.png';
+		return;
+	}
+	if (x > 24  && y < x)
+	{
+		document.images['arrows'].src = 'right.png';
+		return;
+	}
+	if (y > 24)
+	{
+		document.images['arrows'].src = 'down.png';
+		return;
+	}
+	document.images['arrows'].src = 'center.png';
+}
+function arrows_down(event)
+{
+	var top = 0;
+	var left = 0;
+	var ob = document.images['arrows'];
+	do{
+		left += ob.offsetLeft;
+		top += ob.offsetTop;
+		ob = ob.offsetParent;
+	}while (ob);
+	var x = event.offsetX?(event.offsetX):event.pageX-left;
+	var y = event.offsetY?(event.offsetY):event.pageY-top;
+	if (x < 11 && x < y && x < 36-y)
+	{
+		if (document.getElementById('orient').checked==true)
+			makeRequest('button_19','');
+		else
+			makeRequest('button_21','');
+		return;
+	}
+	if (y < 11 && y < 36-x)
+	{
+		if (document.getElementById('orient').checked==true)
+			makeRequest('button_22','');
+		else
+			makeRequest('button_19','');
+		return;
+	}
+	if (x > 24  && y < x)
+	{
+		if (document.getElementById('orient').checked==true)
+			makeRequest('button_20','');
+		else
+			makeRequest('button_22','');
+		return;
+	}
+	if (y > 24)
+	{
+		if (document.getElementById('orient').checked==true)
+			makeRequest('button_21','');
+		else
+			makeRequest('button_20','');
+		return;
+	}
+	makeRequest('button_23','');
+}
+function arrows_out()
+{
+	document.images['arrows'].src = 'arrows.png';
+}
+// from w3schools.com
+function setCookie(c_name,value,expiredays)
+{
+var exdate=new Date();
+exdate.setDate(exdate.getDate()+expiredays);
+document.cookie=c_name+ "=" +escape(value)+
+((expiredays==null) ? "" : ";expires="+exdate.toUTCString());
+}
+
+function indof(x,arr)
+{
+	if (arr.indexOf)
+		return arr.indexOf(x);
+	for (var i = 0; i<arr.length; i++)
+	{
+		if (arr[i] == x)
+			return i;
+	}
+	return -1;
+}
+function indoff(x,arr,start)
+{
+	if (arr.indexOf)
+		return arr.indexOf(x,start);
+	for (var i = start; i<arr.length; i++)
+	{
+		if (arr[i] == x)
+			return i;
+	}
+	return -1;
+}
+
+function getCookie(c_name)
+{
+if (document.cookie.length>0)
+  {
+  c_start=indof(c_name+"=",document.cookie);
+  if (c_start!=-1)
+    {
+    c_start=c_start + c_name.length+1;
+    c_end=indoff(";",document.cookie,c_start);
+    if (c_end==-1) c_end=document.cookie.length;
+    return unescape(document.cookie.substring(c_start,c_end));
+    }
+  }
+return "";
+}
+//document.getElementById('lowres').checked = getCookie("lowres");
+	<<ADMINrefreshstatus(); >>
+function updatecookies()
+{
+	setCookie("lowres",document.getElementById('lowres').checked?'true':'false',30);
+	setCookie("halfsize",document.getElementById('halfsize').checked?'true':'false',30);
+	setCookie("orient",document.getElementById('orient').checked?'true':'false',30);
+	setCookie("flip",document.getElementById('flip').checked?'true':'false',30);
+	<<ADMIN	setCookie("sms",document.getElementById('sms').checked?'true':'false',30); >>
+	<<ADMIN	setCookie("sendonenter",document.getElementById('sendonenter').checked?'true':'false',30); >>
+	<<ADMIN	setCookie("sendtyping",document.getElementById('sendtyping').checked?'true':'false',30); >>
+//	setCookie("old",document.getElementById('old').checked?'true':'false',30);
+	setCookie("auto",document.getElementById('auto').checked?'true':'false',30);
+	<<ADMIN setCookie("kalive",document.getElementById('kalive').checked?'true':'false',30); >>
+	setCookie("png",document.getElementById('png').checked?'true':'false',30);
+	setCookie("first",document.getElementById('first').checked?'true':'false',30);
+//	setCookie("force",document.getElementById('force').checked?'true':'false',30);
+//	setCookie("forcems",document.getElementById('forcems').value,30);
+}
+//function forcereload(id)
+//{
+//	if (id == forcerefrid && document.getElementById('force').checked == true)
+//	{
+//		refreshImage();
+//		setTimeout("forcereload("+id+")",document.getElementById('forcems').value);
+//	}
+//}
+//function forcerefresh()
+//{
+//	if (document.getElementById('force').checked && document.getElementById('forcems').value < 400)
+//		document.getElementById('forcems').value = 400;
+//	forcerefrid++;
+//	if (document.getElementById('force').checked)
+//		setTimeout("forcereload("+forcerefrid+")",document.getElementById('forcems').value);
+//}
+function autorefresh()
+{
+	if (document.getElementById('auto').checked==true)
+		refreshImage(false)
+}
+function recordImages()
+{
+	if (recording == false)
+	{
+		recording = true;
+		var t = document.getElementById('png').checked?'png':'jpg';
+		var or = document.getElementById('orient').checked?'h':'v';
+		var lowr = document.getElementById('lowres').checked?'l':'n';
+		var f = document.getElementById('first').checked?'f':'n';
+		var fli = document.getElementById('flip').checked?'f':'n';
+		recordmakeRequest('startrecord'+t+'?'+or+lowr+f+fli,'');
+		document.getElementById('recbut').value="`Stop recording`";
+	}
+	else
+	{
+		recording = false;
+		document.getElementById('recbut').value="Record images";
+		window.location = 'finishrecord';
+	}
+	refreshImage(false);
+}
+</script>
+
+
+<div class="main">
+<div id="ind" class='green'></div>
+<<ADMIN<span id="status" class='stat'></span><br/> >>
+<div id="imgholder" style="float:left;padding:3px">
+<img class="kep" src="" id="screenshot" align="left" <<ADMIN onmousedown="down(event)" onmouseup="up(event)" onmouseover="move(event)" onmouseout="if (pressed) up(event);">> ondragstart="return false"/></div>
+<div style="float:left">
+<span style="font-variant: small-caps; padding:2px ">Webkey <<WEBVERSION>></span><br/>
+<div class="rightmenu">
+<input type="checkbox" id="lowres" onclick="updatecookies()" >`Low resolution`</input>
+<input type="checkbox" id="halfsize" onclick="checklowres();updatecookies()">`Half size`</input><br/>
+<input type="checkbox" id="orient" onclick="refreshImage(false);updatecookies()">`Horizontal`</input>
+<input type="checkbox" id="flip" onclick="refreshImage(false);updatecookies()">`Flip`</input>
+<input type="checkbox" id="png" onclick="refreshImage(false);updatecookies()">`PNG (slower than JPEG)`</input>
+<br/>
+<input type="checkbox" id="auto" onclick="updatecookies();autorefresh()">`Auto refresh`</input>
+<<ADMIN<input type="checkbox" id="kalive" onclick="keepAlive();updatecookies()">`Keep alive`</input><br/> >>
+<input type="checkbox" id="first" onclick="updatecookies()">`Use only first framebuffer`</input><br/>
+<<ADMIN <div id="light" style="float:left"></div>  >>
+<div style="clear:both"></div>
+<<ADMIN<div style="float:left;padding:5px"><img src="arrows.png" id="arrows" onmousedown="arrows_down(event)" onmousemove="arrows_move(event)" onmouseout="arrows_out()" ondragstart="return false" style="vertical-align:middle;padding-right:10px"> >>
+<<ADMIN </div> >>
+	<div style="float:left">
+	<input type="button" class="butt" value="`Refresh image`" onclick="refreshImage(false)"/>
+	<input id="recbut" type="button" class="butt" value="`Record images`" onclick="recordImages()"/><br/>
+<input id="savebut" type="button" class="butt" value="`Save image`" onclick="saveImage(false)"/>
+</div>
+ </div>
+ <div style="clear:both"></div>
+<<ADMIN<input type="text" id="uri" value="http://" rows="1" onkeydown="if (event.keyCode==13) {document.getElementById('urisend').click(); return false;}"><input id="urisend" type="button" class="butt" value="`Open in browser`" onclick=intent('android.intent.action.VIEW',document.getElementById('uri').value)><br/> >>
+<<ADMIN<input type="text" id="dial" value="" rows="1" onkeydown="if (event.keyCode==13) {document.getElementById('callsend').click(); return false;}"><input id="callsend" type="button" class="butt" value="`Call`" onclick="call(document.getElementById('dial').value)"> >>
+<<ADMIN<input id="dialsend" type="button" class="butt" value="`Dial`" onclick=intent('android.intent.action.DIAL','tel:'+document.getElementById('dial').value)><br/> >>
+<<ADMIN<input type="text" id="run" value="ls -l -a" rows="1" onkeydown="if (event.keyCode==13) {document.getElementById('runsend').click(); return false;}"><input id="runsend" type="button" class="butt" value="`Run`" onclick="runline(document.getElementById('run').value)"><br/> >>
+</div>
+
+
+<<ADMIN
+<div style="clear:both"></div>
+<div style="float:left">
+<textarea id="text" value="`Click here to type on phone!`" cols="80" rows="4"
+	onkeypress="sendkey(event)" onkeydown="isBackspace(event)" onfocus="cleartext()">`Click here to type on phone!`</textarea>
+</div>
+<div style="float:left">
+	<input type="checkbox" id="sendtyping" checked="yes" onclick="document.getElementById('sendonenter').checked = false;updatecookies()">`Send while typing`</input><br/>
+	<input type="checkbox" id="sendonenter" onclick="document.getElementById('sendtyping').checked = false;updatecookies()">`Send on Enter`</input>
+	<input type="checkbox" id="sms" onclick="updatecookies()">`SMS mode`</input><br/>
+	<input id="resendbutton" type="button" class="butt" value="`Send text`" onclick="resend()"><br/>
+<input id="configbuttons" type="button" class="butt" value="`Config buttons`" onclick="window.location = 'config_buttons.html'">
+<input id="configkeys" type="button" class="butt" value="`Config keys`" onclick="window.location = 'config_keys.html'"><br/>
+</div> >>
+<div style="clear:both"></div>
+<script type="text/javascript" language="javascript">
+	<<ADMIN
+	function adjust(i)
+	{
+		lightmakeRequest("adjust_light_"+i,"");
+	}	
+	var t = "<div style=\"float:left;padding-right:4px\">`Adjust light`: </div>";
+	for(var i=0;i <= 256; i+=16)
+	{
+		t += "<div id=\"light_"+i+"\" style=\"width:4px;height:16px;background-color:rgb("+i+","+i+","+i+");float:left\" onmouseover=\"document.getElementById('light_"+i+"').style.backgroundColor='red'\" onmouseout=\"document.getElementById('light_"+i+"').style.backgroundColor='rgb("+i+","+i+","+i+")'\" onclick=\"adjust("+i+")\"></div>"
+	}
+	document.getElementById('light').innerHTML = t;
+	if (getCookie("sms") == "true")
+		document.getElementById('sms').checked = true;
+	if (getCookie("sendtyping") == "false")
+		document.getElementById('sendtyping').checked = false;
+	if (getCookie("sendonenter") == "true")
+		document.getElementById('sendonenter').checked = true;
+	>>
+	if (getCookie("lowres") == "true")
+		document.getElementById('lowres').checked = true;
+	if (getCookie("halfsize") == "true")
+		document.getElementById('halfsize').checked = true;
+	if (getCookie("lowres") == "")
+		document.getElementById('lowres').checked = true;
+	if (getCookie("halfsize") == "")
+		document.getElementById('halfsize').checked = true;
+	if (getCookie("orient") == "true")
+		document.getElementById('orient').checked = true;
+	if (getCookie("flip") == "true")
+		document.getElementById('flip').checked = true;
+//	if (getCookie("old") == "true")
+//		document.getElementById('old').checked = true;
+	if (getCookie("first") == "true")
+		document.getElementById('first').checked = true;
+	if (getCookie("png") == "true")
+		document.getElementById('png').checked = true;
+	if (getCookie("auto") == "true")
+	{
+		document.getElementById('auto').checked = true;
+		setTimeout("refreshImage(false)",200);
+	}
+<<ADMIN	if (getCookie("kalive") == "true")
+	document.getElementById('kalive').checked = true;>>
+	if (getCookie("auto")=="")
+	{
+		document.getElementById('auto').checked = true;
+		setTimeout("refreshImage(false)",200);
+	}
+<<ADMIN	if (getCookie("kalive")=="")
+	document.getElementById('kalive').checked = true;>>
+//	if (getCookie("forcems")!="")
+//		document.getElementById('forcems').value = getCookie("forcems");
+//	else
+//		document.getElementById('forcems').value = getCookie("1000");
+//	if (getCookie("force")=="true")
+//	{
+//		document.getElementById('force').checked = true;
+//		forcerefresh();
+//	}
+</script>
+<div>

@@ -1,0 +1,26 @@
+../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -I png -L ../build/platforms/android-3/arch-arm/usr/lib/ -lc ../build/platforms/android-3/arch-arm/usr/lib/crtbegin_dynamic.o  webkey.c suinput.c mongoose.c ../build/prebuilt/linux-x86/arm-eabi-4.4.0/arm-eabi/lib/libstdc++.a png/pngwrite.c png/pngerror.c png/pngmem.c png/pngrio.c png/pngrtran.c png/pngset.c png/pngtrans.c png/pngwio.c png/pngwtran.c png/pngwutil.c png/png.c -lz
+
+
+../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -I png -L ../build/platforms/android-3/arch-arm/usr/lib/ -lc ../build/platforms/android-3/arch-arm/usr/lib/crtbegin_dynamic.o  webkey.c suinput.c mongoose.c ../build/prebuilt/linux-x86/arm-eabi-4.4.0/arm-eabi/lib/libstdc++.a png.a -lz
+miutan ar-rel osszeraktam a png*.o-kat
+../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -I png -L ../build/platforms/android-3/arch-arm/usr/lib/ -lc ../build/platforms/android-3/arch-arm/usr/lib/crtbegin_dynamic.o  webkey.c suinput.c mongoose.c ../build/prebuilt/linux-x86/arm-eabi-4.4.0/arm-eabi/lib/libstdc++.a png.a -lz -o webkey && scp webkey root@192.168.77.254:/android/data/webkey/
+
+miutan sajat crt0.o-m van innen: http://honeypod.blogspot.com/2007/12/initialize-libc-for-android.html
+../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -I png -L ../build/platforms/android-3/arch-arm/usr/lib/ -lc crt0.o webkey.c suinput.c mongoose.c ../build/prebuilt/linux-x86/arm-eabi-4.4.0/arm-eabi/lib/libstdc++.a png.a -lz -o webkey && echo OK && scp webkey root@192.168.33.200:/android/data/webkey/
+
+
+Script:
+for i in pngerror pngmem png pngrio pngrtran pngset pngtrans pngwio pngwrite pngwtran pngwutil; do
+  echo $i
+  ../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -I png -L ../build/platforms/android-3/arch-arm/usr/lib/ -lz -c png/${i}.c -O2;
+done
+../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-ar -r png.a png*.o
+../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -L ../build/platforms/android-3/arch-arm/usr/lib/ -lc crt0.o androcontroll.c suinput.c mongoose.c ../build/prebuilt/linux-x86/arm-eabi-4.4.0/arm-eabi/lib/libstdc++.a libpng12.a -lz -o androcontroll -O2 && ../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-strip androcontroll && echo OK && scp androcontroll *.html root@192.168.77.254:/android/data/data/com.androcontroll/files/ && adb shell chmod a+x /data/data/com.androcontroll/files/androcontroll && adb shell /data/data/com.androcontroll/files/androcontroll
+
+
+png.c:
+../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -I png -L ../build/platforms/android-3/arch-arm/usr/lib/ -lc crt0.o png_ndk.c ../build/prebuilt/linux-x86/arm-eabi-4.4.0/arm-eabi/lib/libstdc++.a png.a -lz -o png_ndk -O2 && ../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-strip png_ndk && echo OK
+
+
+
+./menu.sh; ../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-g++ -Wl,-rpath-link=../build/platforms/android-3/arch-arm/usr/lib/,-dynamic-linker=/system/bin/linker -nostdlib -I ../build/platforms/android-3/arch-arm/usr/include/ -L ../build/platforms/android-3/arch-arm/usr/lib/ -lc crt0.o androcontrol.c suinput.c mongoose.c ../build/prebuilt/linux-x86/arm-eabi-4.4.0/arm-eabi/lib/libstdc++.a libpng12.a -lz -o androcontrol -O2 && ../build/prebuilt/linux-x86/arm-eabi-4.4.0/bin/arm-eabi-strip androcontrol && echo OK && cp -f androcontrol html/*.html fast_keys.txt *.png spec_keys.txt /home/petya/work/AndroControl/androcontrol/assets && cd /home/petya/work/AndroControl/ && ./buildapk_petya.sh && adb shell pm uninstall com.androcontrol && adb install -r androcontrol.apk && cd -

@@ -1,0 +1,2 @@
+#g++ webkey.c mongoose.c suinput.c base64.c -lpthread -lpng -ldl && /home/petya/download/android-ndk-r3-crystax/webkey/a.out 8080; cat log.txt; cat error.txt
+g++ -g -Wno-write-strings -DNOCRYPT -DUSE_FILE32API -lc minizip/zip.c minizip/ioapi.c -lz webkey.c mongoose.c suinput.c base64.c sqlite3_pc.o -lz -lpthread -lpng -ldl -ljpeg -o a.out && gdb --args /home/petya/download/android-ndk-r6/webkey/a.out 8080;

@@ -1,0 +1,97 @@
+HTTP/1.1 200 OK
+Cache-Control: no-store, no-cache, must-revalidate
+Cache-Control: post-check=0, pre-check=0
+Pragma: no-cache
+Content-Type: charset=UTF-8
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">	
+</head>
+<body bgcolor="ffffff" onload="setReady();" style="overflow:hidden; padding: 0px; padding-left: 0px; margin: 0px;">
+<script language="javascript" type="text/javascript">
+var jsReady = false;
+function isReady(){
+	return jsReady;
+}
+function setReady(){
+	jsReady = true;
+}
+var messages = 
+{
+	MaxFileSizeLimit:252, 
+	MaxFileSize:211, 
+	HTTPError:253, 
+	IOError:254, 
+	SecurityError:255,
+	Uploaded:256,
+	Remove:257,
+	Add:214,
+	Clear:216,
+	Upload:77,
+	Cancel:232,
+	TotalFile:258,
+	SizeText:259,
+	Byte:260, 
+	existingFilesFound:262, 
+	overwrite:263, 
+	skip:264, 
+	rename:6, 
+	UploadLimitsTitle:281, 
+	UploadLimitsSizePerFile:282, 
+	UploadLimitsTotalSize:283, 
+	UploadLimitsFilesNumber:284,
+	
+	UploaderOptionsLabel:312,
+	UploaderLimitLabel:281,
+	AutoUploadLabel:311,
+	CloseText:86,
+	OptionsText:310
+};
+
+function triggerFlashEvent(){
+	if(arguments.length < 1) return;
+	var eventType = arguments[0];
+	try{
+		switch(eventType){
+			case "currentFiles":
+				return parent.ajaxplorer.getUserSelection().getContextFileNames("__AJXP_SEP__");
+			break;
+			case "currentFolder":
+				var folder = parent.base64_encode(parent.ajaxplorer.getUserSelection().getContextNode().getPath());
+				return folder;
+			break;	
+			case "uploadComplete":
+				parent.ajaxplorer.fireContextRefresh();
+			break;
+			case "getMessage":
+				var messageId = arguments[1];
+				if(parent && parent.window.MessageHash && messages){
+					return parent.window.MessageHash[messages[messageId]];
+				}
+				return messageId;			
+			break;
+			case "closeModal":
+				parent.hideLightBox(true);
+			break;
+			case "getProperty":
+				var pName = arguments[1];
+				var value = parent.getAjxpCookie(pName);
+				if(!value) return null;
+				return (value == "true"?true:false);
+			break;
+			case "storeProperty":
+				var pName = arguments[1];
+				var pValue = arguments[2];
+				return parent.setAjxpCookie(pName, pValue);
+			break;
+			default: 
+			break;
+		}
+	}catch(e){
+		alert('Error during communication with flash : call ('+eventType+'):'+ e.message);
+	}
+}
+
+
+var url = 'content.php?get_action=upload&ajxp_sessid=

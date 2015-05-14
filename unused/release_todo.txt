@@ -1,0 +1,6 @@
+update version:
+- webkey.h
+- Androidmanifest
+- NetTest.java
+strip mongoose.c, Makefile
+upload source

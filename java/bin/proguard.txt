@@ -1,0 +1,69 @@
+# view AndroidManifest.xml #generated:28
+-keep class com.googlecode.android_scripting.activity.FutureActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:135
+-keep class com.webkey.BootRinstall { <init>(...); }
+
+# view AndroidManifest.xml #generated:122
+-keep class com.webkey.ChatReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:67
+-keep class com.webkey.DynDnsSettings { <init>(...); }
+
+# view AndroidManifest.xml #generated:141
+-keep class com.webkey.GPS { <init>(...); }
+
+# view AndroidManifest.xml #generated:59
+-keep class com.webkey.ManageUsers { <init>(...); }
+
+# view AndroidManifest.xml #generated:169
+-keep class com.webkey.NetTest { <init>(...); }
+
+# view AndroidManifest.xml #generated:51
+-keep class com.webkey.PreparePermissions { <init>(...); }
+
+# view AndroidManifest.xml #generated:148
+-keep class com.webkey.SL4A { <init>(...); }
+
+# view AndroidManifest.xml #generated:154
+-keep class com.webkey.SMS { <init>(...); }
+
+# view AndroidManifest.xml #generated:16
+-keep class com.webkey.ScriptApplication { <init>(...); }
+
+# view AndroidManifest.xml #generated:18
+-keep class com.webkey.ScriptService { <init>(...); }
+
+# view AndroidManifest.xml #generated:19
+-keep class com.webkey.Webkey { <init>(...); }
+
+# view AndroidManifest.xml #generated:160
+-keep class com.webkey.Widget { <init>(...); }
+
+# view AndroidManifest.xml #generated:77
+-keep class com.webkey.activity.ChatUI { <init>(...); }
+
+# view AndroidManifest.xml #generated:72
+-keep class com.webkey.activity.LogView { <init>(...); }
+
+# view AndroidManifest.xml #generated:85
+-keep class com.webkey.activity.RemoteScreenTab { <init>(...); }
+
+# view AndroidManifest.xml #generated:42
+-keep class com.webkey.activity.SettingsTab { <init>(...); }
+
+# view AndroidManifest.xml #generated:33
+-keep class com.webkey.activity.WebkeyTab { <init>(...); }
+
+# view AndroidManifest.xml #generated:128
+-keep class com.webkey.receivers.RemoteRegistrationReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:93
+-keep class com.webkey.remotescreen.RemoteQualitySettings { <init>(...); }
+
+# view AndroidManifest.xml #generated:101
+-keep class com.webkey.remotescreen.RemoteScreenActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:112
+-keep class com.webkey.remotescreen.RemoteScreenUtil { <init>(...); }
+
